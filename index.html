@@ -4,22 +4,183 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Rekab Abdelkader</title>
-    <link rel="stylesheet" href="style.css">
+    <style>
+        /* القواعد الأساسية لتنسيق العناصر */
+        body, html {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f4f4;
+            color: #333;
+        }
+
+        .container {
+            width: 90%;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .search {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #ffffff;
+            padding: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+
+        .search input {
+            width: 48%;
+            padding: 15px;
+            font-size: 16px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            transition: border-color 0.3s;
+        }
+
+        .search input:focus {
+            border-color: #007bff;
+            outline: none;
+        }
+
+        .page-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .page-header p {
+            font-size: 42px;
+            font-weight: bold;
+            color: #007bff;
+            margin: 0;
+        }
+
+        #data-table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: #ffffff;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            overflow: hidden;
+            margin-top: 20px;
+        }
+
+        #data-table th, #data-table td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: center;
+        }
+
+        #data-table th {
+            background-color: #007bff;
+            color: white;
+            font-weight: bold;
+        }
+
+        #data-table td {
+            background-color: #f9f9f9;
+        }
+
+        #data-table tr:nth-child(even) td {
+            background-color: #f1f1f1;
+        }
+
+        .input-form {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .input-form input {
+            width: 30%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        .input-form button {
+            padding: 10px 15px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-left: 10px;
+        }
+
+        #pagination {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        #pagination button {
+            padding: 10px 15px;
+            margin: 5px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        @media (max-width: 768px) {
+            .search input {
+                width: 100%;
+                margin-bottom: 10px;
+            }
+
+            .search {
+                flex-direction: column;
+            }
+
+            #data-table th, #data-table td {
+                padding: 8px;
+            }
+
+            .input-form {
+                flex-direction: column;
+            }
+
+            .input-form input {
+                width: 100%;
+                margin-bottom: 10px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                width: 100%;
+                padding: 10px;
+            }
+
+            .page-header p {
+                font-size: 28px;
+            }
+
+            .search input {
+                font-size: 14px;
+                padding: 10px;
+            }
+
+            #data-table th, #data-table td {
+                font-size: 14px;
+            }
+        }
+    </style>
 </head>
 <body>
 
-    <!-- خانات البحث في أعلى الصفحة -->
     <div class="search">
         <input type="text" id="chargementSearch" placeholder="ابحث عن CHARGEMENT">
         <input type="text" id="dechargementSearch" placeholder="ابحث عن DECHARGEMENT">
     </div>
 
-    <!-- عنوان الصفحة -->
     <div class="page-header">
         <p>Recharche Distance</p>
     </div>
 
-    <!-- نموذج إدخال البيانات -->
     <div class="container input-form">
         <input type="text" id="chargementInput" placeholder="CHARGEMENT" />
         <input type="text" id="dechargementInput" placeholder="DECHARGEMENT" />
@@ -27,7 +188,6 @@
         <button id="addButton">إضافة</button>
     </div>
 
-    <!-- الجدول -->
     <div class="container">
         <table id="data-table">
             <thead>
@@ -45,6 +205,9 @@
         </table>
     </div>
 
+    <div id="pagination"></div>
+
     <script src="script.js"></script>
+
 </body>
 </html>

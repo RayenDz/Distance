@@ -12693,13 +12693,16 @@ let data = [
     // باقي البيانات...
 ];
 
-let editIndex = -1; // مؤشر لتحديد الصف الذي يتم تعديله
+let currentPage = 1;
+const rowsPerPage = 20;
+let filteredData = data;
+let editIndex = -1;
 
 // دالة لتحديث الجدول
-function updateTable(filteredData = data) {
+function updateTable(dataToShow = filteredData) {
     const tbody = document.querySelector('#data-table tbody');
     tbody.innerHTML = '';
-    filteredData.forEach((item, index) => {
+    dataToShow.forEach((item, index) => {
         tbody.innerHTML += `
             <tr>
                 <td>${item.chargement}</td>
@@ -12712,7 +12715,7 @@ function updateTable(filteredData = data) {
     });
 }
 
-// دالة لإضافة أو تعديل بيانات
+// دالة لإضافة أو تعديل البيانات
 document.getElementById('addButton').addEventListener('click', () => {
     const chargement = document.getElementById('chargementInput').value;
     const dechargement = document.getElementById('dechargementInput').value;
@@ -12720,48 +12723,129 @@ document.getElementById('addButton').addEventListener('click', () => {
 
     if (chargement && dechargement && !isNaN(km)) {
         if (editIndex === -1) {
-            // إضافة صف جديد
             data.push({chargement, dechargement, km});
         } else {
-            // تعديل الصف الحالي
             data[editIndex] = {chargement, dechargement, km};
-            editIndex = -1; // إعادة ضبط مؤشر التعديل
+            editIndex = -1;
         }
+        filterData();
         updateTable();
-        // مسح الحقول
         document.getElementById('chargementInput').value = '';
         document.getElementById('dechargementInput').value = '';
         document.getElementById('kmInput').value = '';
+    } else {
+        alert('يرجى ملء جميع الحقول بشكل صحيح.');
     }
 });
 
 // دالة لتعديل البيانات
 function startEdit(index) {
-    editIndex = index;
     const item = data[index];
     document.getElementById('chargementInput').value = item.chargement;
     document.getElementById('dechargementInput').value = item.dechargement;
     document.getElementById('kmInput').value = item.km;
+    editIndex = index;
 }
 
 // دالة لحذف صف
 function deleteRow(index) {
     data.splice(index, 1);
+    filterData();
     updateTable();
 }
 
-// دوال البحث
-document.getElementById('chargementSearch').addEventListener('input', function() {
-    const searchValue = this.value.toLowerCase();
-    const filteredData = data.filter(item => item.chargement.toLowerCase().includes(searchValue));
-    updateTable(filteredData);
-});
+// دالة لتقسيم البيانات إلى صفحات
+function displayPage(page) {
+    currentPage = page;
+    const startIndex = (page - 1) * rowsPerPage;
+    const endIndex = startIndex + rowsPerPage;
+    const paginatedData = filteredData.slice(startIndex, endIndex);
+    updateTable(paginatedData);
+    setupPagination(filteredData.length, rowsPerPage);
+}
 
-document.getElementById('dechargementSearch').addEventListener('input', function() {
-    const searchValue = this.value.toLowerCase();
-    const filteredData = data.filter(item => item.dechargement.toLowerCase().includes(searchValue));
-    updateTable(filteredData);
-});
+// عدد الأرقام التي نعرضها في كل مجموعة
+const pagesPerGroup = 6;
 
-// تهيئة الجدول عند التحميل
-updateTable();
+// دالة لإعداد التقسيم إلى صفحات مع تقسيم الترقيم إلى مجموعات من 6 أرقام
+function setupPagination(totalRows, rowsPerPage) {
+    const pageCount = Math.ceil(totalRows / rowsPerPage);
+    const pagination = document.getElementById('pagination');
+    pagination.innerHTML = '';
+
+    // حساب مجموعة الصفحات الحالية
+    const currentGroup = Math.ceil(currentPage / pagesPerGroup);
+
+    // حساب بداية ونهاية مجموعة الصفحات
+    const startPage = (currentGroup - 1) * pagesPerGroup + 1;
+    const endPage = Math.min(currentGroup * pagesPerGroup, pageCount);
+
+    // زر "السابق" للتنقل للمجموعة السابقة
+    if (startPage > 1) {
+        const prevButton = document.createElement('span');
+        prevButton.innerText = 'السابق';
+        prevButton.style.cursor = 'pointer';
+        prevButton.style.margin = '0 5px';
+        prevButton.addEventListener('click', () => displayPage(startPage - 1));
+        pagination.appendChild(prevButton);
+    }
+
+    // عرض أرقام الصفحات في المجموعة الحالية
+    for (let i = startPage; i <= endPage; i++) {
+        const span = document.createElement('span');
+        span.innerText = i;
+        span.style.cursor = 'pointer';
+        span.style.padding = '5px';
+        span.style.fontSize = '16px';
+        span.style.fontWeight = 'bold';
+        span.style.margin = '0 5px';
+
+        // تغيير اللون عند الصفحة الحالية
+        if (i === currentPage) {
+            span.style.color = '#ffffff';
+            span.style.backgroundColor = '#007bff';
+            span.style.padding = '10px';
+            span.style.borderRadius = '5px';
+        }
+
+        span.addEventListener('click', () => displayPage(i));
+        pagination.appendChild(span);
+
+        // إضافة النقاط بين الأرقام فقط إذا لم يكن الرقم الأخير في المجموعة
+        if (i < endPage) {
+            pagination.appendChild(document.createTextNode('.'));
+        }
+    }
+
+    // زر "التالي" للتنقل للمجموعة التالية
+    if (endPage < pageCount) {
+        const nextButton = document.createElement('span');
+        nextButton.innerText = 'التالي';
+        nextButton.style.cursor = 'pointer';
+        nextButton.style.margin = '0 5px';
+        nextButton.addEventListener('click', () => displayPage(endPage + 1));
+        pagination.appendChild(nextButton);
+    }
+}
+
+
+
+// دالة البحث
+function filterData() {
+    const chargementSearch = document.getElementById('chargementSearch').value.toLowerCase();
+    const dechargementSearch = document.getElementById('dechargementSearch').value.toLowerCase();
+
+    filteredData = data.filter(item => 
+        item.chargement.toLowerCase().includes(chargementSearch) &&
+        item.dechargement.toLowerCase().includes(dechargementSearch)
+    );
+
+    displayPage(1); // عرض الصفحة الأولى بعد البحث
+}
+
+// تطبيق البحث عند الكتابة
+document.getElementById('chargementSearch').addEventListener('input', filterData);
+document.getElementById('dechargementSearch').addEventListener('input', filterData);
+
+// عرض الصفحة الأولى عند التحميل
+displayPage(1);

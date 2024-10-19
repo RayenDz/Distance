@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rekab Abdelkader</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- خانات البحث في أعلى الصفحة -->
+    <div class="search">
+        <input type="text" id="chargementSearch" placeholder="ابحث عن CHARGEMENT">
+        <input type="text" id="dechargementSearch" placeholder="ابحث عن DECHARGEMENT">
+    </div>
+
+    <!-- عنوان الصفحة -->
+    <div class="page-header">
+        <p>Recharche Distance</p>
+    </div>
+
+    <!-- نموذج إدخال البيانات -->
+    <div class="container input-form">
+        <input type="text" id="chargementInput" placeholder="CHARGEMENT" />
+        <input type="text" id="dechargementInput" placeholder="DECHARGEMENT" />
+        <input type="number" id="kmInput" placeholder="KM" />
+        <button id="addButton">إضافة</button>
+    </div>
+
+    <!-- الجدول -->
+    <div class="container">
+        <table id="data-table">
+            <thead>
+                <tr>
+                    <th>CHARGEMENT</th>
+                    <th>DECHARGEMENT</th>
+                    <th>KM</th>
+                    <th>تعديل</th>
+                    <th>حذف</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- البيانات هنا -->
+            </tbody>
+        </table>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
